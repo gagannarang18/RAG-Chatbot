@@ -53,7 +53,7 @@ Ask contextual questions about your uploaded data and get accurate answers using
 
 ## 📸 Demo
 
-![Chatbot Screenshot](assets/demo.png)
+![Chatbot Screenshot](assets/demo1.png)
 
 ---
 

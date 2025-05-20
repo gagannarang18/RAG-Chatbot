@@ -1,15 +1,13 @@
 # Author: Gagan Narang
-#importing neccessary libraries
 import os
 from dotenv import load_dotenv
 import pandas as pd
-from getpass import getpass
 from langchain_community.document_loaders import (
     DataFrameLoader, PyPDFLoader, TextLoader, JSONLoader
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain_aws import BedrockEmbeddings  # Changed from HuggingFace
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
@@ -18,10 +16,9 @@ from langchain_core.runnables import RunnablePassthrough
 # Load environment variables
 load_dotenv()
 
-#defining the RAGChatbot class
 class RAGChatbot:
     def __init__(self, dataset_path="data/ai_faq.csv",
-                 embedding_model="sentence-transformers/all-MiniLM-L6-v2",
+                 embedding_model="amazon.titan-embed-text-v2:0",  # Amazon Titan model
                  llm_model="llama3-8b-8192", temperature=0.7):
         self.dataset_path = dataset_path
         self.embedding_model = embedding_model
@@ -55,86 +52,58 @@ class RAGChatbot:
         except Exception as e:
             raise RuntimeError(f"Failed to load data: {str(e)}")
 
-    def initialize(self):
-        """Initialize the RAG pipeline (lazy initialization)"""
-        if not self._initialized:
-            self.rag_pipeline()
-            self._initialized = True
-
     def rag_pipeline(self):
-        """Build the complete RAG pipeline using Groq LLM and Hugging Face Inference API for embeddings."""
+        """Build the complete RAG pipeline using Amazon Titan Embeddings."""
         try:
-            # Step 1: Load and split documents
             docs = self.load_data()
 
-            # Step 2: Load Hugging Face API token
-            print("[INFO] Using HuggingFace Inference API for embeddings...")
-            hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-            if not hf_token:
-                from getpass import getpass
-                print("[WARNING] HuggingFace API token not found in environment. Prompting manually...")
-                hf_token = getpass("Enter your HF Inference API Token: ")
-
-            # Step 3: Ensure correct model casing (Hugging Face model names are case-sensitive)
-            if self.embedding_model.lower() == "sentence-transformers/all-minilm-l6-v2":
-                self.embedding_model = "sentence-transformers/all-MiniLM-L6-v2"
-
-            # Step 4: Create embedding model using HF Inference API
-            embeddings = HuggingFaceInferenceAPIEmbeddings(
-                api_key=hf_token,
-                model_name=self.embedding_model
+            print("[INFO] Using Amazon Titan Embeddings...")
+            embeddings = BedrockEmbeddings(
+                model_id=self.embedding_model,
+                region_name=os.getenv("AWS_REGION", "us-east-1")
             )
 
-            # Step 5: Debug: test embedding API call
-            try:
-                _ = embeddings.embed_query("test query")
-            except Exception as embed_err:
-                raise RuntimeError(f"[ERROR] Embedding model failed: {embed_err}")
-
-            # Step 6: Create FAISS vector store
             self.vector_store = FAISS.from_documents(docs, embeddings)
             self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
 
-            # Step 7: Initialize Groq LLM
-            groq_key = os.getenv("GROQ_API_KEY")
-            if not groq_key:
-                raise RuntimeError("GROQ_API_KEY not found in environment variables.")
-                
             llm = ChatGroq(
                 temperature=self.temperature,
                 model_name=self.llm_model,
-                groq_api_key=groq_key
+                groq_api_key=os.getenv("GROQ_API_KEY")
             )
 
-            # Step 8: Prompt template for retrieval
             prompt_template = """Answer the question based only on the following context:
             {context}
             
             Question: {input}
             
             Provide a concise, accurate response. If unsure, say you don't know."""
-
+            
             prompt = ChatPromptTemplate.from_template(prompt_template)
 
-            # Step 9: Assemble RAG chain
             self.chain = (
                 {"context": self.retriever, "input": RunnablePassthrough()}
                 | prompt
                 | llm
                 | StrOutputParser()
             )
-
-            print("[INFO] RAG pipeline successfully initialized.")
-
+            
         except Exception as e:
             raise RuntimeError(f"Failed to build RAG pipeline: {str(e)}")
-
 
     def ask(self, query):
         """Answer a user query using the RAG pipeline."""
         try:
             if not self._initialized:
-                self.initialize()
+                self.rag_pipeline()
+                self._initialized = True
             return self.chain.invoke(query)
         except Exception as e:
             return f"Error processing your query: {str(e)}"
+        
+        
+chatbot = RAGChatbot(embedding_model="amazon.titan-embed-text-v2:0")
+response = chatbot.ask("What is RAG?")
+print(response)
+        
+        

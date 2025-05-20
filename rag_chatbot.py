@@ -26,3 +26,17 @@ class RAGChatbot:
          self.retriever = None
          self.chain = None
     
+     def load_data(self):
+         
+        # Load the CSV path
+        df = pd.read_csv(self.dataset_path)
+        
+        # Convert to LangChain documents
+        loader = DataFrameLoader(df, page_content_column="content")
+        documents = loader.load()
+        
+        # Splitting the documents into chunks
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        splits = text_splitter.split_documents(documents)
+        
+        

@@ -1,0 +1,9 @@
+langchain-core
+langchain-community
+langchain-groq
+langchain-text-splitters
+pandas
+python-dotenv
+faiss-cpu
+streamlit
+huggingface-hub

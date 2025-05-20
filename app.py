@@ -10,33 +10,68 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Improved CSS for light and dark mode support and better layout
 st.markdown("""
 <style>
-    .stChatInput {position: fixed; bottom: 2rem;}
-    .stChatMessage {padding: 1rem;}
+    /* Avoid fixed position for input, use sticky instead */
+    .stChatInput {
+        position: sticky;
+        bottom: 1.5rem;
+        z-index: 1000;
+    }
+
+    .stChatMessage {
+        padding: 1rem;
+    }
+
+    /* Sidebar gradient */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #4a6fa5 0%, #3a5a8a 100%);
     }
+
     .sidebar-title {
         color: white !important;
         font-size: 24px !important;
         margin-bottom: 20px !important;
     }
+
     .sidebar-text {
         color: #f0f2f6 !important;
     }
+
+    /* Chat message boxes - light mode */
     .assistant-message {
         background-color: #f8f9fa;
+        color: #000000;  /* black text for visibility */
         border-radius: 15px;
         padding: 12px;
         margin: 5px 0;
     }
+
     .user-message {
         background-color: #e3f2fd;
+        color: #000000;  /* black text for visibility */
         border-radius: 15px;
         padding: 12px;
         margin: 5px 0;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        .assistant-message {
+            background-color: #2a2a2a;
+            color: #f0f0f0;  /* light text for dark background */
+        }
+        .user-message {
+            background-color: #3a3a3a;
+            color: #f0f0f0;  /* light text */
+        }
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #1e3a5f 0%, #122a45 100%);
+        }
+        .sidebar-text {
+            color: #cccccc !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)

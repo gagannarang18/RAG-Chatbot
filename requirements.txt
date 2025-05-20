@@ -1,9 +1,9 @@
 langchain-core
 langchain-community
+langchain-aws
 langchain-groq
 langchain-text-splitters
-pandas
 python-dotenv
+pandas
 faiss-cpu
-streamlit
-huggingface-hub
+boto3

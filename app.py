@@ -1,5 +1,11 @@
 import streamlit as st
 from rag_chatbot import RAGChatbot
+import os
+
+# Fallback to Streamlit secrets if environment variables are missing
+groq_key = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
+aws_id = os.getenv("AWS_ACCESS_KEY_ID") or st.secrets.get("AWS_ACCESS_KEY_ID")
+aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY") or st.secrets.get("AWS_SECRET_ACCESS_KEY")
 
 # Page config - must be first Streamlit command
 st.set_page_config(

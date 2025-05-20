@@ -2,12 +2,7 @@ import streamlit as st
 from rag_chatbot import RAGChatbot
 import os
 
-# Fallback to Streamlit secrets if environment variables are missing
-groq_key = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
-aws_id = os.getenv("AWS_ACCESS_KEY_ID") or st.secrets.get("AWS_ACCESS_KEY_ID")
-aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY") or st.secrets.get("AWS_SECRET_ACCESS_KEY")
-
-# Page config - must be first Streamlit command
+# Page config
 st.set_page_config(
     page_title="AI Knowledge Assistant",
     page_icon="🤖",
@@ -15,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for styling
+# Custom CSS
 st.markdown("""
 <style>
     .stChatInput {position: fixed; bottom: 2rem;}
@@ -46,26 +41,26 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar with info
+# Sidebar content
 with st.sidebar:
     st.markdown('<p class="sidebar-title">🔍 RAG Chatbot</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sidebar-text">Ask questions about AI concepts using Retrieval-Augmented Generation</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sidebar-text">Ask questions about AI using Retrieval-Augmented Generation.</p>', unsafe_allow_html=True)
     st.markdown("---")
     st.markdown("""
     <p class="sidebar-text">
     <b>Technologies:</b><br>
-    • Groq (Llama3-8B)<br>
+    • Groq (LLaMA3)<br>
     • Amazon Titan Embeddings<br>
-    • LangChain RAG Pipeline<br>
-    • FAISS Vector Store
+    • LangChain<br>
+    • FAISS Vector DB
     </p>
     """, unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown('<p class="sidebar-text">Created by Gagan Narang</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sidebar-text">Made by Gagan Narang</p>', unsafe_allow_html=True)
 
-# Main chat interface
+# Main app interface
 st.title("💬 AI Knowledge Assistant")
-st.caption("Powered by Groq's ultra-fast LLM inference")
+st.caption("Powered by Groq + Amazon Titan Embeddings")
 
 # Initialize chatbot
 if "chatbot" not in st.session_state:
@@ -74,23 +69,20 @@ if "chatbot" not in st.session_state:
         {"role": "assistant", "content": "Hi! I'm your AI assistant. Ask me anything about AI concepts!"}
     ]
 
-# Display chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        if message["role"] == "assistant":
-            st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
+# Show messages
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        role_class = "assistant-message" if msg["role"] == "assistant" else "user-message"
+        st.markdown(f'<div class="{role_class}">{msg["content"]}</div>', unsafe_allow_html=True)
 
-# Chat input
+# User input
 if prompt := st.chat_input("Type your question here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
     with st.chat_message("user"):
         st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
-    
+
     with st.chat_message("assistant"):
-        with st.spinner("🔍 Searching knowledge base..."):
+        with st.spinner("🔍 Searching..."):
             response = st.session_state.chatbot.ask(prompt)
         st.markdown(f'<div class="assistant-message">{response}</div>', unsafe_allow_html=True)
         st.session_state.messages.append({"role": "assistant", "content": response})

@@ -13,4 +13,7 @@
 - Retrieval-Augmented Generation pipeline
 - Supports CSV/JSON/PDF/TXT documents
 - Groq LLM backend
-- HuggingFace Inference API embeddings
+- AWS Amazon Titan Vector Embeddings
+
+## Demo 
+- You can refer to the demo pictures in assets/demo1.png and assets/demo2.png

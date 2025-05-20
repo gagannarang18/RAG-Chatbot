@@ -1,4 +1,5 @@
 # Author: Gagan Narang
+#importing essesntial libraries
 import os
 from dotenv import load_dotenv
 import pandas as pd
@@ -18,8 +19,8 @@ load_dotenv()
 
 class RAGChatbot:
     def __init__(self, dataset_path="data/ai_faq.csv",
-                 embedding_model="amazon.titan-embed-text-v2:0",  # Amazon Titan model
-                 llm_model="llama3-8b-8192", temperature=0.7):
+                 embedding_model="amazon.titan-embed-text-v2:0",  # Leveraged the Amazon Titan Embedding model
+                 llm_model="llama3-8b-8192", temperature=0.7):   #Groq cloud free tier llama model for text generation
         self.dataset_path = dataset_path
         self.embedding_model = embedding_model
         self.llm_model = llm_model

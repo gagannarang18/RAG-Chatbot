@@ -1,5 +1,5 @@
-# rag_chatbot.py
-
+#Author: Gagan Narang
+#importing necccessary libraries
 import os
 from dotenv import load_dotenv
 import pandas as pd
@@ -19,6 +19,7 @@ from langchain_core.runnables import RunnablePassthrough
 # Load environment variables
 load_dotenv()
 
+#Defining the RAGChatbot class
 class RAGChatbot:
     def __init__(self, dataset_path="data/ai_faq.csv",
                  embedding_model="sentence-transformers/all-mpnet-base-v2",
@@ -30,7 +31,9 @@ class RAGChatbot:
         self.vector_store = None
         self.retriever = None
         self.chain = None
-
+        
+        
+# Loading the data from different formats
     def load_data(self):
         """Load and split documents from supported formats."""
         print("[INFO] Loading data...")
@@ -49,7 +52,8 @@ class RAGChatbot:
         documents = loader.load()
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         return splitter.split_documents(documents)
-
+    
+# Building the RAG pipeline
     def rag_pipeline(self):
         """Build the RAG pipeline: Embed, retrieve, query."""
         docs = self.load_data()

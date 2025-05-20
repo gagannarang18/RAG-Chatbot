@@ -74,3 +74,11 @@ Ask contextual questions about your uploaded data and get accurate answers using
 ## 📝 License
 
 MIT License © 2025 Gagan Narang
+
+---
+
+## 🙏 Acknowledgements
+
+- LangChain documentation for guidance on building the RAG pipeline: https://docs.langchain.com/
+- DeepSeek for UI inspiration and Streamlit layout ideas: https://chat.deepseek.com
+

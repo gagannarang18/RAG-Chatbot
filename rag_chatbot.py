@@ -101,9 +101,9 @@ class RAGChatbot:
         except Exception as e:
             return f"Error processing your query: {str(e)}"
         
-        
-chatbot = RAGChatbot(embedding_model="amazon.titan-embed-text-v2:0")
-response = chatbot.ask("What is RAG?")
-print(response)
+# Example usage in terminal
+# chatbot = RAGChatbot(embedding_model="amazon.titan-embed-text-v2:0")
+# response = chatbot.ask("What is RAG?")
+# print(response)
         
         

@@ -1,9 +1,9 @@
-langchain-core
-langchain-community
-langchain-aws
-langchain-groq
-langchain-text-splitters
-python-dotenv
-pandas
-faiss-cpu
-boto3
+langchain-core            #includes all core bulding blocks of langchain framework
+langchain-community       #includes all community modules of langchain framework
+langchain-aws             #includes all aws modules of langchain framework
+langchain-groq            #includes all groq modules of langchain framework
+langchain-text-splitters  #includes all text splitters of langchain framework
+python-dotenv             #for loading environment variables from .env file
+pandas                    #for data manipulation and analysis
+faiss-cpu                 #for efficient similarity search and vector storage
+boto3                     #for AWS SDK for Python

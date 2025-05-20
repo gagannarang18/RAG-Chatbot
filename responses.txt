@@ -1,0 +1,20 @@
+Q: What is RAG?
+A: Retrieval-Augmented Generation combines information retrieval with LLMs to provide context-aware answers.
+
+Q: How does LangChain help with RAG?
+A: LangChain provides tools for document loading, vector stores, and retrieval pipelines.
+
+Q: What makes Groq special?
+A: Groq offers ultra-fast LLM inference using custom LPU hardware.
+
+Q: How do I set up RAG with LangChain?
+A: You need a document loader, text splitter, embedding model, vector store, retriever, and LLM.
+
+Q: What is the purpose of a retriever in RAG?
+A: The retriever fetches relevant documents from a knowledge base to provide context for the LLM.
+
+Q: What is the name of the Author of the LangChain documentation?
+A: The author of the LangChain documentation is Harrison Chase.
+
+Q: Who is the owner of this ai-intern repository?
+A: The owner of this repository is Gagan Narang.

@@ -3,14 +3,13 @@
 import os
 from dotenv import load_dotenv
 import pandas as pd
-
+from getpass import getpass
 from langchain_community.document_loaders import (
     DataFrameLoader, PyPDFLoader, TextLoader, JSONLoader
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
@@ -19,11 +18,10 @@ from langchain_core.runnables import RunnablePassthrough
 # Load environment variables
 load_dotenv()
 
-#defining the class
-#RAGChatbot
+#defining the RAGChatbot class
 class RAGChatbot:
     def __init__(self, dataset_path="data/ai_faq.csv",
-                 embedding_model="sentence-transformers/all-mpnet-base-v2",
+                 embedding_model="sentence-transformers/all-MiniLM-L6-v2",
                  llm_model="llama3-8b-8192", temperature=0.7):
         self.dataset_path = dataset_path
         self.embedding_model = embedding_model
@@ -34,7 +32,7 @@ class RAGChatbot:
         self.chain = None
         self._initialized = False
         
-    def load_data(self):
+    def load_data(self):    
         """Load and split documents from supported formats."""
         print("[INFO] Loading data...")
         try:

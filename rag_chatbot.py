@@ -1,4 +1,5 @@
 # Author: Gagan Narang
+#importing neccessary libraries
 import os
 from dotenv import load_dotenv
 import pandas as pd
@@ -18,6 +19,8 @@ from langchain_core.runnables import RunnablePassthrough
 # Load environment variables
 load_dotenv()
 
+#defining the class
+#RAGChatbot
 class RAGChatbot:
     def __init__(self, dataset_path="data/ai_faq.csv",
                  embedding_model="sentence-transformers/all-mpnet-base-v2",

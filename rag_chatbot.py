@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import pandas as pd
-from langchain_community.document_loaders import DataFrameLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
@@ -9,6 +8,12 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import (
+    DataFrameLoader,
+    PyPDFLoader,
+    TextLoader,
+    JSONLoader
+)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -27,16 +32,36 @@ class RAGChatbot:
          self.chain = None
     
      def load_data(self):
-         
-        # Load the CSV path
-        df = pd.read_csv(self.dataset_path)
-        
-        # Convert to LangChain documents
-        loader = DataFrameLoader(df, page_content_column="content")
+        """
+        Load data from CSV, JSON, TXT, or PDF into LangChain Documents.
+        Returns list of Document objects.
+        """
+        if self.dataset_path.endswith('.csv'):
+            df = pd.read_csv(self.dataset_path)
+            loader = DataFrameLoader(df, page_content_column="content")
+        elif self.dataset_path.endswith('.json'):
+            loader = JSONLoader(
+                file_path=self.dataset_path,
+                jq_schema='.[]',
+                text_content=False
+            )
+        elif self.dataset_path.endswith('.txt'):
+            loader = TextLoader(self.dataset_path)
+        elif self.dataset_path.endswith('.pdf'):
+            loader = PyPDFLoader(self.dataset_path)
+        else:
+            raise ValueError(f"Unsupported format: {self.dataset_path}")
+
         documents = loader.load()
         
-        # Splitting the documents into chunks
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        splits = text_splitter.split_documents(documents)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200
+        )
+        return text_splitter.split_documents(documents)
+    
+    
+        
+        
         
         

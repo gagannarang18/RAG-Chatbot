@@ -49,7 +49,7 @@ with st.sidebar:
     <p class="sidebar-text">
     <b>Technologies:</b><br>
     • Groq (Llama3-8B)<br>
-    • HuggingFace Embeddings<br>
+    • Amazon Titan Embeddings<br>
     • LangChain RAG Pipeline<br>
     • FAISS Vector Store
     </p>
